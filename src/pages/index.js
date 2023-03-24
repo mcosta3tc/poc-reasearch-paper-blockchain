@@ -1,11 +1,9 @@
-import {Button} from '@nextui-org/react';
+import Header from '@/components/Header';
 
 export default function Home() {
     return (
         <>
-            <Button color="gradient" auto>
-                Gradient
-            </Button>
+            <Header></Header>
         </>
     );
 }
