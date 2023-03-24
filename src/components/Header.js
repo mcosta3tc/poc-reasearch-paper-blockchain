@@ -1,9 +1,12 @@
 import React from 'react';
 import {Link, Navbar, Spacer, Text} from '@nextui-org/react';
 import {Logo} from './logo/Logo';
+import {useRouter} from 'next/router';
 
 
 function Header() {
+    const {asPath} = useRouter();
+
     const collapseItems = [
         'Profile',
         'Dashboard',
@@ -28,20 +31,24 @@ function Header() {
                         },
                     }}
                 >
-                    <Logo/>
-                    <Spacer x={1}></Spacer>
-                    <Text b color="inherit" hideIn="xs">
-                        Irak Papers
-                    </Text>
+                    <Link href="/">
+                        <Logo/>
+                        <Spacer x={1}></Spacer>
+                        <Text b color="black" hideIn="xs">
+                            Irak Papers
+                        </Text>
+                    </Link>
                 </Navbar.Brand>
                 <Navbar.Content
                     enableCursorHighlight
-                    activeColor="secondary"
+                    activeColor="primary"
                     hideIn="xs"
                     variant="highlight-rounded"
                 >
-                    <Navbar.Link isActive href="#">Create Contract</Navbar.Link>
-                    <Navbar.Link href="#">Verify Document</Navbar.Link>
+                    {/*                    <Navbar.Link href="/create-form"
+                                 isActive={asPath === '/create-form'}>
+                        Create Contract
+                    </Navbar.Link>*/}
                 </Navbar.Content>
                 <Navbar.Content
                     css={{
