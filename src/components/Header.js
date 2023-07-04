@@ -1,9 +1,10 @@
 import React from 'react';
 import {Link, Navbar, Spacer, Text} from '@nextui-org/react';
 import {Logo} from './logo/Logo';
+import {ConnectWallet} from '@thirdweb-dev/react';
 
 
-function Header() {
+export function Header() {
     const collapseItems = [
         'Profile',
         'Dashboard',
@@ -31,7 +32,7 @@ function Header() {
                     <Logo/>
                     <Spacer x={1}></Spacer>
                     <Text b color="inherit" hideIn="xs">
-                        Irak Papers
+                        Estate Papers
                     </Text>
                 </Navbar.Brand>
                 <Navbar.Content
@@ -40,8 +41,8 @@ function Header() {
                     hideIn="xs"
                     variant="highlight-rounded"
                 >
-                    <Navbar.Link isActive href="#">Create Contract</Navbar.Link>
-                    <Navbar.Link href="#">Verify Document</Navbar.Link>
+                    <Navbar.Link isActive href="/create-nft">Create Contract</Navbar.Link>
+                    <Navbar.Link href="/">Home</Navbar.Link>
                 </Navbar.Content>
                 <Navbar.Content
                     css={{
@@ -51,6 +52,10 @@ function Header() {
                         },
                     }}
                 >
+                    <ConnectWallet
+                        btnTitle="Connectez votre wallet"
+                        colorMode={'dark'}
+                    />
                 </Navbar.Content>
                 <Navbar.Collapse>
                     {collapseItems.map((item, index) => (

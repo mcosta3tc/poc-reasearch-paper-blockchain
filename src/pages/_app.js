@@ -1,4 +1,4 @@
-import '@/styles/globals.css';
+import '../styles/globals.css';
 import {ThirdwebProvider} from '@thirdweb-dev/react';
 import {NextUIProvider, useSSR} from '@nextui-org/react';
 
