@@ -41,8 +41,8 @@ export function Header() {
                     hideIn="xs"
                     variant="highlight-rounded"
                 >
-                    <Navbar.Link isActive href="#">Create Contract</Navbar.Link>
-                    <Navbar.Link href="#">Verify Document</Navbar.Link>
+                    <Navbar.Link isActive href="/create-nft">Create Contract</Navbar.Link>
+                    <Navbar.Link href="/">Home</Navbar.Link>
                 </Navbar.Content>
                 <Navbar.Content
                     css={{

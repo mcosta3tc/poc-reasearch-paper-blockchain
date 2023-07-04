@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Button, Grid, Input, Spacer } from '@nextui-org/react';
 import { useForm } from 'react-hook-form';
 import { useAddress, useConnect } from '@thirdweb-dev/react';
-import { ChainId, ListingType, type Marketplace, ThirdwebSDK } from '@thirdweb-dev/sdk'
+import { ThirdwebSDK } from '@thirdweb-dev/sdk'
 import Header from '../components/Header'
 
 
@@ -12,6 +12,7 @@ type formDataType = {
     name: string,
     address: string,
     size:number,
+    image:string,
 }
 
 export enum InputEvent {
@@ -19,36 +20,22 @@ export enum InputEvent {
     ADDRESS = "address",
     SIZE = "size",
     COUNT = "count",
+    IMAGE = "image"
 }
 
 const NftDrop = () => {
     const { register, handleSubmit, formState: { isSubmitting } } = useForm<formDataType>();
-    const sdkAdmin = ThirdwebSDK.fromPrivateKey( process.env.NEXT_PUBLIC_SDK_PK || '', 'goerli' )
+    const [isLoading,setIsLoading] = useState(false)
+    const [contractAddress,setContractAddress] = useState('')
+    const sdkAdmin = ThirdwebSDK.fromPrivateKey( process.env.NEXT_PUBLIC_SDK_PK || '', 'mumbai' )
     const [ { data } ] = useConnect();
     const connectedAddress = useAddress();
 
-
-    /*    async function saveFormData( data: formDataType ) {
-            return await fetch( "http://localhost:5000/create-drop", {
-                body: JSON.stringify( data ),
-                headers: { "Content-Type": "application/json" },
-                method: "POST"
-            } )
-        }*/
-
     const onSubmit = async ( formData: formDataType ) => {
-        /*const response = await saveFormData( data )
-
-        if ( response.status === 400 ) {
-            // Validation error
-        } else if ( response.ok ) {
-            // successful
-        } else {
-            // unknown error
-        }*/
-
+        setIsLoading(true)
 
         if ( data.connected ) {
+            console.log(connectedAddress)
             const collectionContractAddress = await sdkAdmin?.deployer.deployNFTCollection( {
                 name: formData.name,
                 primary_sale_recipient: connectedAddress || '',
@@ -62,6 +49,7 @@ const NftDrop = () => {
 
             const metaData = {
                 name: formData.name,
+                image:formData.image,
                 properties: {
                     size:formData.size,
                     address:formData.address
@@ -75,12 +63,17 @@ const NftDrop = () => {
 
             const mintTransaction = await contract?.mintBatchTo( connectedAddress || '', metaDatas );
             for (const nftObject of mintTransaction) {
-                console.log(nftObject.id)
+                console.log(nftObject.id.toString())
             }
             console.log(contract.erc721.getAddress())
+            setContractAddress(contract.erc721.getAddress())
 
             console.log( "mint" )
+            setIsLoading(false)
+
         } else {
+            setIsLoading(false)
+
             console.log( 'no connected wallet' )
         }
     }
@@ -88,8 +81,8 @@ const NftDrop = () => {
     return (
             <>
                 <Header></Header>
-                <Grid.Container justify={ 'center' } css={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-                    <form onSubmit={ handleSubmit( onSubmit ) }>
+                <Grid.Container justify={ 'center' } css={{display:'flex',justifyContent:'center',alignItems:'center',gap:'5',height:'1000px'}}>
+                    <form onSubmit={ handleSubmit( onSubmit ) } id="form">
                         <Input size={ "md" }
                                clearable
                                bordered
@@ -108,6 +101,13 @@ const NftDrop = () => {
                                clearable
                                bordered
                                color={ "primary" }
+                               labelPlaceholder="Image"
+                               { ...register( InputEvent.IMAGE, { required: true } ) }
+                        />
+                        <Input size={ "md" }
+                               clearable
+                               bordered
+                               color={ "primary" }
                                labelPlaceholder="Taille"
                                { ...register( InputEvent.SIZE, { required: true } ) }
                         />
@@ -119,7 +119,8 @@ const NftDrop = () => {
                                { ...register( InputEvent.COUNT, { required: true } ) }
                         />
                         <Spacer y={ 2 }/>
-                        <Button type="submit">{ isSubmitting ? 'Loading' : "Submit" }</Button>
+                        <Button type="submit" disabled={isLoading}>{ isLoading ? 'Loading' : "Submit" }</Button>
+                        {contractAddress}
                     </form>
                 </Grid.Container>
             </>
